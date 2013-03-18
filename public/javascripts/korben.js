@@ -2,7 +2,18 @@
 var Korben;
 (function(Korben) {
 
-	Korben.store = function(db, storeName) {
+	// Wraps access to an IndexedDB database.
+	Korben.DbWrapper = function(db) {
+		var self = this;
+		self.db = db;
+		
+		self.store = function(storeName) {
+			return new Korben.StoreWrapper(db, storeName);					
+		};
+	};
+	
+	// Wraps access to an IndexedDb store.
+	Korben.StoreWrapper = function(db, storeName) {
 		var self = this;		
 		self.db = db;
 		self.storeName = storeName;
@@ -44,7 +55,7 @@ var Korben;
 		};
 	}
 
-	Korben.openStore = function(initFunction, dbName, storeName) {
+	Korben.db = function(initFunction, dbName) {
 	
 		var def = $.Deferred();
 		
@@ -62,7 +73,7 @@ var Korben;
 		request.onsuccess = function(event) {
 			// Do something with request.result!
 			db = event.target.result;
-			var store = new Korben.store(db, storeName);
+			var store = new Korben.DbWrapper(db);
 			def.resolve(store);            
 		};
 		

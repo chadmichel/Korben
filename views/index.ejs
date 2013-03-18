@@ -30,7 +30,6 @@ if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
 }
 
-// deferred ?
 asyncTest(" get / put ", function() {
 
 	function initFunction(event) {			
@@ -44,17 +43,18 @@ asyncTest(" get / put ", function() {
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
-	Korben.openStore(initFunction, "SomeNotes", "notes").then(function(store) { 
-		store.put(note).then(function() {		
-			store.get(id).then(function(loaded) {
-				ok(loaded.id == note.id);
+	Korben.db(initFunction, "SomeNotes").then(function(db) {
+		db.store("notes").put(note).then(function() {
+			db.store("notes").get(id).then(function(loaded) {
+				ok(loaded.id === note.id);
 				start();
 			});
 		});
 	});
-
+	
 	expect(1);
 });
+
 
 </script>
 
