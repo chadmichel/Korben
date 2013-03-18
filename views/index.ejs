@@ -43,12 +43,14 @@ asyncTest(" get / put ", function() {
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
-	Korben.db(initFunction, "SomeNotes").then(function(db) {
-		db.store("notes").put(note).then(function() {
-			db.store("notes").get(id).then(function(loaded) {
-				ok(loaded.id === note.id);
-				start();
-			});
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.put(note).then(function() {
+		store.get(id).then(function(loaded) {
+			ok(loaded.id === note.id);
+			start();
 		});
 	});
 	
