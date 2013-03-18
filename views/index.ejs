@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+
+
+<body>
+
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+<script src="libs/jquery.js"></script>
+<link rel="stylesheet" href="libs/qunit.css">
+<script src="libs/jqunit.js"></script>
+
+<script src="javascripts/guid.js"></script>  
+<script src="javascripts/indexeddb.js"></script>  
+
+<script>
+
+// From: https://developer.mozilla.org/en-US/docs/IndexedDB/Using_IndexedDB
+// In the following line, you should include the prefixes of implementations you want to test.
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+// DON'T use "var indexedDB = ..." if you're not in a function.
+// Moreover, you may need references to some window.IDB* objects:
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+// (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
+if (!window.indexedDB) {
+    window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
+}
+
+// deferred ?
+asyncTest(" deferred - get / put ", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	IndexedDB.openStore(initFunction, "SomeNotes", "notes").then(function(store) { 
+		store.put(note).then(function() {		
+			store.get(id).then(function(loaded) {
+				ok(loaded.id == note.id);
+				start();
+			});
+		});
+	});
+
+	expect(1);
+});
+
+</script>
+
+</body>
+
+
+</html>
