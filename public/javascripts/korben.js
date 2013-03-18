@@ -1,8 +1,8 @@
 
-var IndexedDB;
-(function(IndexedDB) {
+var Korben;
+(function(Korben) {
 
-	IndexedDB.store = function(db, storeName) {
+	Korben.store = function(db, storeName) {
 		var self = this;		
 		self.db = db;
 		self.storeName = storeName;
@@ -44,7 +44,7 @@ var IndexedDB;
 		};
 	}
 
-	IndexedDB.openStore = function(initFunction, dbName, storeName) {
+	Korben.openStore = function(initFunction, dbName, storeName) {
 	
 		var def = $.Deferred();
 		
@@ -62,7 +62,7 @@ var IndexedDB;
 		request.onsuccess = function(event) {
 			// Do something with request.result!
 			db = event.target.result;
-			var store = new IndexedDB.store(db, storeName);
+			var store = new Korben.store(db, storeName);
 			def.resolve(store);            
 		};
 		
@@ -70,4 +70,4 @@ var IndexedDB;
 	};
 	
 
-}) (IndexedDB || (IndexedDB = {}));
+}) (Korben || (Korben = {}));

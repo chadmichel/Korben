@@ -13,7 +13,7 @@
 <script src="libs/jqunit.js"></script>
 
 <script src="javascripts/guid.js"></script>  
-<script src="javascripts/indexeddb.js"></script>  
+<script src="javascripts/korben.js"></script>  
 
 <script>
 
@@ -31,7 +31,7 @@ if (!window.indexedDB) {
 }
 
 // deferred ?
-asyncTest(" deferred - get / put ", function() {
+asyncTest(" get / put ", function() {
 
 	function initFunction(event) {			
 		db = event.target.result;
@@ -44,7 +44,7 @@ asyncTest(" deferred - get / put ", function() {
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
-	IndexedDB.openStore(initFunction, "SomeNotes", "notes").then(function(store) { 
+	Korben.openStore(initFunction, "SomeNotes", "notes").then(function(store) { 
 		store.put(note).then(function() {		
 			store.get(id).then(function(loaded) {
 				ok(loaded.id == note.id);
