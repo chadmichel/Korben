@@ -63,9 +63,9 @@ var Korben;
 			
 			self.promise.then(function() { 
 				var tx = self.db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);
-				var req = store.get(id);
-					
+				var store = tx.objectStore(self.storeName);			
+				var req = store.get(id);	
+				
 				req.onsuccess = function(event) {				
 					def.resolve(event.srcElement.result);
 				};
@@ -75,6 +75,32 @@ var Korben;
 			});
 			return def;
 		};
+		
+		self.forEach = function(index, callback) {
+			
+			self.promise.then(index, function() {
+				var tx = self.db.transaction(self.storeName, "readwrite");
+				var store = tx.objectStore(self.storeName);
+				var req = null;
+				
+				if (index == null || index.length == 0)
+					req = store.openCursor();
+				else
+				req = store.openKeyCursor(index);
+				
+				req.onsuccess = function(event) {
+	            if (event !== null && event.target !== null) {
+	                    var cursor = event.target.result;
+	                    if (cursor !== null) {
+	                        if (callback !== null)
+	                            callback(cursor);
+	                        cursor.continue();
+	                    }
+	                }
+	            };
+			});
+			
+		}
 	}
 
 	Korben.db = function(initFunction, dbName) {	
