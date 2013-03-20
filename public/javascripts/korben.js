@@ -76,18 +76,19 @@ var Korben;
 			return def;
 		};
 		
-		self.forEach = function(index, callback) {
-			
+		self.forEach = function(index, callback) {			
+
 			self.promise.then(index, function() {
+				
 				var tx = self.db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);
 				var req = null;
-				
+			
 				if (index == null || index.length == 0)
 					req = store.openCursor();
 				else
-				req = store.openKeyCursor(index);
-				
+					req = store.openKeyCursor(index);
+			
 				req.onsuccess = function(event) {
 	            if (event !== null && event.target !== null) {
 	                    var cursor = event.target.result;
@@ -96,10 +97,28 @@ var Korben;
 	                            callback(cursor);
 	                        cursor.continue();
 	                    }
+						else
+						callback(null);
 	                }
 	            };
 			});
+		}
+		
+		self.getAll = function(index) {
 			
+			var def = $.Deferred();
+			
+			self.promise.then(index, function() {
+				
+				var resultArray = [];
+				
+				self.forEach(index, function(data) {
+					if (data == null)
+						def.resolve(resultArray);
+					else
+						resultArray.push(data);
+				});
+			});			
 		}
 	}
 
