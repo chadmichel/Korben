@@ -97,9 +97,11 @@ var Korben;
 			
 				if (index == null || index.length == 0)
 					req = store.openCursor();
-				else
-					req = store.openKeyCursor(index);
-			
+				else {
+					index = store.index(index);
+					req = index.openKeyCursor();
+				}
+				
 				req.onsuccess = function(event) {
 					if (event !== null && event.target !== null) {
 	                    var cursor = event.target.result;
