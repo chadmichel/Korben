@@ -120,14 +120,28 @@ var Korben;
 		self.getAll = function(index) {
 			
 			var def = $.Deferred();
-							
+			
 			var resultArray = [];
 			
-			self.forEach(index, function(data) {
-				if (data == null)
+			self.forEach(index, function(cursor) {
+				if (cursor == null)
 					def.resolve(resultArray);
 				else
-					resultArray.push(data);
+					resultArray.push(cursor.value);
+			});
+			
+			return def; // return promise		
+		};
+		
+		self.removeAll = function(index) {
+		
+			var def = $.Deferred();
+												
+			self.forEach(null, function(cursor) {
+				if (cursor === null)
+					def.resolve();
+				else
+					cursor.delete();
 			});
 			
 			return def; // return promise		
