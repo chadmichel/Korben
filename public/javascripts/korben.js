@@ -89,7 +89,7 @@ var Korben;
 		
 		self.forEach = function(index, callback) {			
 
-			self.promise.then(index, function() {
+			self.execute(function() {
 				
 				var tx = self.db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);

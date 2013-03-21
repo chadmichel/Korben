@@ -75,8 +75,8 @@ asyncTest(" getAll ", function() {
 	var store = db.store("notes");
 
 	store.put(note).then(function() {
-		store.get(id).then(function(loaded) {
-			ok(loaded.id === note.id);
+		store.getAll().then(function(loaded) {
+			ok(loaded.length > 0);
 			start();
 		});
 	});
