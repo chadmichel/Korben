@@ -37,12 +37,23 @@ var Korben;
 			self.db = event.target.result;
 			self.promise.resolve();            
 		};
+		
+		self.execute = function(callback) {
+			if (db === null) {
+				self.promise.then(function() { 
+					callback();
+				});	
+			}
+			else {
+				callback();
+			}					
+		};
 						
 		self.put = function(object) {
 			
 			var def = $.Deferred();
 		
-			self.promise.then(function() { 
+			self.execute(function() { 
 				var tx = self.db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);
 				var req = store.put(object);
@@ -61,7 +72,7 @@ var Korben;
 
 			var def = $.Deferred();
 			
-			self.promise.then(function() { 
+			self.execute(function() { 
 				var tx = self.db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);			
 				var req = store.get(id);	
@@ -90,7 +101,7 @@ var Korben;
 					req = store.openKeyCursor(index);
 			
 				req.onsuccess = function(event) {
-	            if (event !== null && event.target !== null) {
+					if (event !== null && event.target !== null) {
 	                    var cursor = event.target.result;
 	                    if (cursor !== null) {
 	                        if (callback !== null)
@@ -98,28 +109,27 @@ var Korben;
 	                        cursor.continue();
 	                    }
 						else
-						callback(null);
+							callback(null);
 	                }
 	            };
 			});
-		}
+		};
 		
 		self.getAll = function(index) {
 			
 			var def = $.Deferred();
+							
+			var resultArray = [];
 			
-			self.promise.then(index, function() {
-				
-				var resultArray = [];
-				
-				self.forEach(index, function(data) {
-					if (data == null)
-						def.resolve(resultArray);
-					else
-						resultArray.push(data);
-				});
-			});			
-		}
+			self.forEach(index, function(data) {
+				if (data == null)
+					def.resolve(resultArray);
+				else
+					resultArray.push(data);
+			});
+			
+			return def; // return promise		
+		};
 	}
 
 	Korben.db = function(initFunction, dbName) {	
