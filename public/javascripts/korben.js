@@ -146,6 +146,27 @@ var Korben;
 			
 			return def; // return promise		
 		};
+		
+		self.count = function() {
+			
+			var def = $.Deferred();
+			
+			self.execute(function() {
+					
+				var tx = self.db.transaction(self.storeName, "readwrite");
+				var store = tx.objectStore(self.storeName);			
+				var req = store.count();	
+				
+				req.onsuccess = function(event) {				
+					def.resolve(event.target.result);
+				};
+				req.onerror = function(event) {
+					def.reject(event);
+				};									
+			});
+			
+			return def;
+		}
 	}
 
 	Korben.db = function(initFunction, dbName) {	

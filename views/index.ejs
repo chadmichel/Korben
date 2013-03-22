@@ -129,10 +129,72 @@ asyncTest(" remoteAll ", function() {
 	var store = db.store("notes");
 
 	store.put(note).then(function() {
-		store.removeAll("date").then(function() {
+		store.removeAll().then(function() {
 			store.getAll("date").then(function(loaded) {
 				ok(loaded.length === 0);
 				start();
+			});
+		});
+	});
+	
+	expect(1);
+});
+
+asyncTest(" count 1 ", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.removeAll().then(function() {
+		store.put(note).then(function() {
+			store.count().then(function(count) {
+				ok(count === 1);
+				start();
+			});
+		});
+	});
+	
+	expect(1);
+});
+
+asyncTest(" count 2 ", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	var id2 = UUID.generate();
+	var note2 = {id: id2, title: "a title", date: new Date()};
+		
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.removeAll().then(function() {
+		store.put(note).then(function() {
+			store.put(note2).then(function() {
+				store.count().then(function(count) {
+					ok(count === 2);
+					start();
+				});	
 			});
 		});
 	});
