@@ -133,7 +133,7 @@ var Korben;
 			return def; // return promise		
 		};
 		
-		self.removeAll = function(index) {
+		self.removeAll = function() {
 		
 			var def = $.Deferred();
 												
@@ -146,6 +146,27 @@ var Korben;
 			
 			return def; // return promise		
 		};
+		
+		self.clear = function() {
+		
+			var def = $.Deferred();
+			
+			self.execute(function() {
+
+				var tx = self.db.transaction(self.storeName, "readwrite");
+				var store = tx.objectStore(self.storeName);			
+				var req = store.clear();
+				
+				req.onsuccess = function(event) {				
+					def.resolve(event.target.result);
+				};
+				req.onerror = function(event) {
+					def.reject(event);
+				};												
+			});		
+			
+			return def; // return promise		
+		}
 		
 		self.count = function() {
 			

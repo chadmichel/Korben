@@ -234,6 +234,35 @@ asyncTest(" count 2 ", function() {
 	expect(1);
 });
 
+asyncTest(" clear ", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.count().then(function(count) {
+				ok(count === 1);
+				start();
+			});
+		});
+	});
+	
+	expect(1);
+});
+
 </script>
 
 </body>
