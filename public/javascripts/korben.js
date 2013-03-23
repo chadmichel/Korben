@@ -38,6 +38,7 @@ var Korben;
 			self.promise.resolve();            
 		};
 		
+		// Execute a query, calling this ensures the database has been created.
 		self.execute = function(callback) {
 			if (db === null) {
 				self.promise.then(function() { 
@@ -49,6 +50,7 @@ var Korben;
 			}					
 		};
 						
+		// Put a object into the store. This does both insert and update.				
 		self.put = function(object) {
 			
 			var def = $.Deferred();
@@ -68,6 +70,7 @@ var Korben;
 			return def;
 		};
 		
+		// Get an item from the store. If no item nothing (null) is returned.
 		self.get = function(id) {
 
 			var def = $.Deferred();
@@ -78,10 +81,13 @@ var Korben;
 				var req = store.get(id);	
 				
 				req.onsuccess = function(event) {				
-					def.resolve(event.srcElement.result);
+					if (event == null || event.srcElement == null || event.srcElement.result == null)
+						def.resolve(null);
+					else
+						def.resolve(event.srcElement.result);
 				};
 				req.onerror = function(event) {
-					def.reject(event);
+					def.resolve(null);
 				};
 			});
 			return def;

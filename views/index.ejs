@@ -57,6 +57,31 @@ asyncTest(" get / put ", function() {
 	expect(1);
 });
 
+asyncTest(" get no record ", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.get(id).then(function(loaded) {
+		ok(loaded === null);
+		start();
+	});
+	
+	expect(1);
+});
+
 asyncTest(" update record ", function() {
 
 	function initFunction(event) {			
