@@ -168,7 +168,7 @@ asyncTest(" getAll by Index ", function() {
 	expect(1);
 });
 
-asyncTest(" remoteAll ", function() {
+asyncTest(" for each range (contains item)", function() {
 
 	function initFunction(event) {			
 		db = event.target.result;
@@ -180,19 +180,59 @@ asyncTest(" remoteAll ", function() {
 	}
 
 	var id = UUID.generate();
-	var note = {id: id, title: "a title", date: new Date()};
+	var note = {id: id, title: "a title", date: new Date(2013, 1, 2)};
 	
 	var db = Korben.db(initFunction, "SomeNotes");
 	var store = db.store("notes");
 
-	store.put(note).then(function() {
-		store.removeAll().then(function() {
-			store.getAll("date").then(function(loaded) {
-				ok(loaded.length === 0);
-				start();
-			});
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
+				function(key, primaryKey) {
+					if (key != null) {
+						ok(key != null);					
+						ok(primaryKey === id);
+						start();
+					}
+				}
+			);
 		});
-	});
+	});	
+	
+	expect(2);
+});
+
+asyncTest(" for each range (does NOT contain item)", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date(2012, 1, 2)};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
+				function(key, primaryKey) {
+					if (key === null) {
+						ok(key === null);
+						start();
+					}
+					else
+						ok(key !== null); // this will blow up if data returned
+				}
+			);
+		});
+	});	
 	
 	expect(1);
 });

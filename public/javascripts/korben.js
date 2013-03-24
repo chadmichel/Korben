@@ -124,6 +124,34 @@ var Korben;
 			});
 		};
 		
+		self.forEachRange = function(index, start, stop, callback) {
+
+			self.execute(function() {
+
+				var tx = self.db.transaction(self.storeName, "readwrite");
+				var store = tx.objectStore(self.storeName);
+				var req = null;
+			
+				var bound = IDBKeyRange.bound(start, stop);	
+
+				index = store.index(index);
+				req = index.openKeyCursor(bound);
+				
+				req.onsuccess = function(event) {
+					if (event !== null && event.target !== null) {
+	                    var cursor = event.target.result;
+	                    if (cursor !== null) {
+	                        if (callback !== null)
+	                            callback(cursor.key, cursor.primaryKey);
+	                        cursor.continue();
+	                    }
+						else
+							callback(null, null);
+	                }
+	            };												
+			});
+		};
+		
 		// Get All records in a store.
 		self.getAll = function(index) {
 			
@@ -132,7 +160,7 @@ var Korben;
 			var resultArray = [];
 			
 			self.forEach(index, function(cursor) {
-				if (cursor == null)
+				if (cursor === null)
 					def.resolve(resultArray);
 				else
 					resultArray.push(cursor.value);
@@ -199,6 +227,7 @@ var Korben;
 			
 			return def;
 		}
+		
 	}
 
 	Korben.db = function(initFunction, dbName) {	
