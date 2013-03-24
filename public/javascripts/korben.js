@@ -93,6 +93,7 @@ var Korben;
 			return def;
 		};
 		
+		// Iterate over all records 
 		self.forEach = function(index, callback) {			
 
 			self.execute(function() {
@@ -123,6 +124,7 @@ var Korben;
 			});
 		};
 		
+		// Get All records in a store.
 		self.getAll = function(index) {
 			
 			var def = $.Deferred();
@@ -139,6 +141,7 @@ var Korben;
 			return def; // return promise		
 		};
 		
+		// Remove all records from a store.
 		self.removeAll = function() {
 		
 			var def = $.Deferred();
@@ -153,6 +156,7 @@ var Korben;
 			return def; // return promise		
 		};
 		
+		// Clear a store.
 		self.clear = function() {
 		
 			var def = $.Deferred();
@@ -174,6 +178,7 @@ var Korben;
 			return def; // return promise		
 		}
 		
+		// Return number of records in a store.
 		self.count = function() {
 			
 			var def = $.Deferred();
