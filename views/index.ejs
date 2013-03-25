@@ -30,16 +30,19 @@ if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
 }
 
+function initFunction(event) {			
+	db = event.target.result;
+
+	if (event.oldVersion <= 1) {
+		var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+		notesStore.createIndex("date", "date", { unique: false });
+	}	   
+	if (event.oldVersion <= 2) {
+		var intidStore = db.createObjectStore("intid", { keyPath: "id" });			
+	}	   
+}
+
 asyncTest(" get / put ", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
@@ -57,16 +60,27 @@ asyncTest(" get / put ", function() {
 	expect(1);
 });
 
+asyncTest(" get / put (int id)", function() {
+
+	var id = 1;
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.get(id).then(function(loaded) {
+				ok(loaded.id === note.id);
+				start();
+			});
+		});
+	});
+	
+	expect(1);
+});
+
 asyncTest(" get no record ", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
@@ -83,15 +97,6 @@ asyncTest(" get no record ", function() {
 });
 
 asyncTest(" update record ", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
@@ -116,15 +121,6 @@ asyncTest(" update record ", function() {
 
 asyncTest(" getAll ", function() {
 
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
-
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
 	
@@ -143,15 +139,6 @@ asyncTest(" getAll ", function() {
 
 asyncTest(" getAll by Index ", function() {
 
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
-
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
 	
@@ -169,15 +156,6 @@ asyncTest(" getAll by Index ", function() {
 });
 
 asyncTest(" remoteAll ", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
@@ -199,15 +177,6 @@ asyncTest(" remoteAll ", function() {
 
 asyncTest(" count 1 ", function() {
 
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
-
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
 	
@@ -227,15 +196,6 @@ asyncTest(" count 1 ", function() {
 });
 
 asyncTest(" count 2 ", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
@@ -260,15 +220,6 @@ asyncTest(" count 2 ", function() {
 });
 
 asyncTest(" clear ", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
