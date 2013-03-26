@@ -260,7 +260,7 @@ asyncTest(" count 1 ", function() {
 	var db = Korben.db(initFunction, "SomeNotes");
 	var store = db.store("notes");
 
-	store.removeAll().then(function() {
+	store.deleteAll().then(function() {
 		store.put(note).then(function() {
 			store.count().then(function(count) {
 				ok(count === 1);
@@ -282,7 +282,7 @@ asyncTest(" count 2 ", function() {
 	var db = Korben.db(initFunction, "SomeNotes");
 	var store = db.store("notes");
 
-	store.removeAll().then(function() {
+	store.deleteAll().then(function() {
 		store.put(note).then(function() {
 			store.put(note2).then(function() {
 				store.count().then(function(count) {

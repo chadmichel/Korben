@@ -181,7 +181,7 @@ var Korben;
 		};
 		
 		// Remove all records from a store.
-		self.removeAll = function() {
+		self.deleteAll = function() {
 		
 			var def = $.Deferred();
 												
