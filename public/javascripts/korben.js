@@ -84,10 +84,10 @@ var Korben;
 					var req = store.get(id);	
 				
 					req.onsuccess = function(event) {				
-						if (event == null || event.srcElement == null || event.srcElement.result == null)
-							def.resolve(null);
+						if (req.result != null)
+							def.resolve(req.result);
 						else
-							def.resolve(event.srcElement.result);
+							def.resolve(null);
 					};
 					req.onerror = function(event) {
 						def.resolve(null);
@@ -151,7 +151,7 @@ var Korben;
 				req.onsuccess = function(event) {
 					if (event !== null && event.target !== null) {
 	                    var cursor = event.target.result;
-	                    if (cursor !== null) {
+	                    if (cursor != null) {
 	                        if (callback !== null)
 	                            callback(cursor.key, cursor.primaryKey);
 	                        cursor.continue();
