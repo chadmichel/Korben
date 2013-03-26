@@ -180,6 +180,36 @@ asyncTest(" for each range (contains item)", function() {
 	expect(2);
 });
 
+asyncTest(" for each range (contains muiltiple items)", function() {
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date(2013, 1, 2)};
+	
+	var id2 = UUID.generate();
+	var note2 = {id: id2, title: "a title", date: new Date(2013, 1, 3)};
+		
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.put(note2).then(function() {
+				store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 4), 
+					function(key, primaryKey) {
+						if (key != null) {
+							ok(key != null);					
+							if (primaryKey == id2)
+								start();
+						}
+					}
+				);
+			});
+		});
+	});	
+	
+	expect(2);
+});
+
 asyncTest(" for each range (get item)", function() {
 
 	function initFunction(event) {			
