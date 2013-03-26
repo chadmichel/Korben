@@ -74,22 +74,33 @@ var Korben;
 		self.get = function(id) {
 
 			var def = $.Deferred();
-			
+					
 			self.execute(function() { 
-				var tx = self.db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);			
-				var req = store.get(id);	
 				
-				req.onsuccess = function(event) {				
-					if (event == null || event.srcElement == null || event.srcElement.result == null)
+				if (id != null) {
+
+					var tx = self.db.transaction(self.storeName, "readwrite");
+					var store = tx.objectStore(self.storeName);								
+					var req = store.get(id);	
+				
+					req.onsuccess = function(event) {				
+						if (event == null || event.srcElement == null || event.srcElement.result == null)
+							def.resolve(null);
+						else
+							def.resolve(event.srcElement.result);
+					};
+					req.onerror = function(event) {
 						def.resolve(null);
-					else
-						def.resolve(event.srcElement.result);
-				};
-				req.onerror = function(event) {
-					def.resolve(null);
-				};
+					};
+				} else {
+					setTimeout(function() {
+						def.resolve(null);
+					}, 0);
+					
+				}	
+				
 			});
+			
 			return def;
 		};
 		

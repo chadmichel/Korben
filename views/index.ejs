@@ -202,6 +202,43 @@ asyncTest(" for each range (contains item)", function() {
 	expect(2);
 });
 
+asyncTest(" for each range (get item)", function() {
+
+	function initFunction(event) {			
+		db = event.target.result;
+
+		 if (event.oldVersion <= 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+	}
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date(2013, 1, 2)};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
+				function(key, primaryKey) {
+					if (key !== null) {
+						store.get(primaryKey).then(function(item) {
+							ok(item !== null);
+							ok(item.id === id);
+							ok(item.title == note.title);
+							start();
+						});
+					}
+				}				
+			);
+		});
+	});	
+	
+	expect(3);
+});
+
 asyncTest(" for each range (does NOT contain item)", function() {
 
 	function initFunction(event) {			
