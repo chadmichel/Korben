@@ -3,6 +3,8 @@ var Korben;
 (function(Korben) {
 	
 	// Wraps access to an IndexedDB database.
+	// You will end accessing a store from this object.
+	// db.store("notes");
 	Korben.DbWrapper = function(initFunction, dbName) {
 		var self = this;
 		self.initFunction = initFunction;
@@ -14,6 +16,8 @@ var Korben;
 	};
 	
 	// Wraps access to an IndexedDb store.
+	// Stores provide access to store related functions,
+	// such as put, get, getAll, forEach...
 	Korben.StoreWrapper = function(initFunction, dbName, storeName) {
 		var self = this;	
 		self.db = null;	
@@ -135,6 +139,7 @@ var Korben;
 			});
 		};
 		
+		// Iterate over all records that are inside of a range.
 		self.forEachRange = function(index, start, stop, callback) {
 
 			self.execute(function() {
@@ -241,6 +246,7 @@ var Korben;
 		
 	}
 
+    // Return a database context.
 	Korben.db = function(initFunction, dbName) {	
 		return new Korben.DbWrapper(initFunction, dbName);
 	};
