@@ -24,7 +24,7 @@ var Korben;
 		self.dbName = dbName;
 		self.storeName = storeName;
 		self.promise = $.Deferred();
-		self.init = new initFunction();
+		self.init = initFunction;
 		
 		var request = window.indexedDB.open(dbName, self.init.version);      
 		var db = null;

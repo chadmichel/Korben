@@ -30,11 +30,11 @@ if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
 }
 
-function initFunction() {			
+var initFunction = {			
 	
-	this.version = 4;
+	version: 4,
 	
-	this.upgrade = function(event) {
+	upgrade: function(event) {
 		db = event.target.result;
 
 		if (event.oldVersion < 1) {
