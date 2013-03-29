@@ -24,12 +24,13 @@ var Korben;
 		self.dbName = dbName;
 		self.storeName = storeName;
 		self.promise = $.Deferred();
+		self.init = new initFunction();
 		
-		var request = window.indexedDB.open(dbName, 1);      
+		var request = window.indexedDB.open(dbName, self.init.version);      
 		var db = null;
             
 		request.onupgradeneeded = function(event) {
-			initFunction(event);	   
+			self.init.upgrade(event);	   
 		};
         
 		request.onerror = function(event) {

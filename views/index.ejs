@@ -30,16 +30,26 @@ if (!window.indexedDB) {
     window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
 }
 
-function initFunction(event) {			
-	db = event.target.result;
+function initFunction() {			
+	
+	this.version = 4;
+	
+	this.upgrade = function(event) {
+		db = event.target.result;
 
-	if (event.oldVersion <= 1) {
-		var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-		notesStore.createIndex("date", "date", { unique: false });
-	}	   
-	if (event.oldVersion <= 2) {
-		var intidStore = db.createObjectStore("intid", { keyPath: "id" });			
-	}	   
+		if (event.oldVersion < 1) {
+			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
+			notesStore.createIndex("date", "date", { unique: false });
+		}	   
+		if (event.oldVersion < 2) {
+			var intidStore = db.createObjectStore("intid", { keyPath: "id" });			
+		}	   
+
+		if (event.oldVersion < 3) {
+			var intRangeStore = db.createObjectStore("intrange", { keyPath: "id" });
+			intRangeStore.createIndex("intColumn", "intColumn", { unique: false });
+		}	   
+	}
 }
 
 asyncTest(" get / put ", function() {
@@ -180,21 +190,47 @@ asyncTest(" for each range (contains item)", function() {
 	expect(2);
 });
 
-asyncTest(" for each range (contains muiltiple items)", function() {
+asyncTest(" for each range (contains item)", function() {
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date(2013, 1, 2)};
 	
-	var id2 = UUID.generate();
-	var note2 = {id: id2, title: "a title", date: new Date(2013, 1, 3)};
-		
 	var db = Korben.db(initFunction, "SomeNotes");
 	var store = db.store("notes");
 
 	store.clear().then(function() {
 		store.put(note).then(function() {
-			store.put(note2).then(function() {
-				store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 4), 
+			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
+				function(key, primaryKey) {
+					if (key != null) {
+						ok(key != null);					
+						ok(primaryKey === id);
+						start();
+					}
+				}
+			);
+		});
+	});	
+	
+	expect(2);
+});
+
+
+asyncTest(" for each range int (contains muiltiple items)", function() {
+
+	var id = UUID.generate();
+	var intRange = {id: id, title: "a title", intColumn: 1};
+	
+	var id2 = UUID.generate();
+	var intRange2 = {id: id2, title: "a title", intColumn: 2};
+		
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("intrange");
+
+	store.clear().then(function() {
+		store.put(intRange).then(function() {
+			store.put(intRange2).then(function() {
+				store.forEachRange("intColumn", 0, 3, 
 					function(key, primaryKey) {
 						if (key != null) {
 							ok(key != null);					
@@ -211,15 +247,6 @@ asyncTest(" for each range (contains muiltiple items)", function() {
 });
 
 asyncTest(" for each range (get item)", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date(2013, 1, 2)};
@@ -248,15 +275,6 @@ asyncTest(" for each range (get item)", function() {
 });
 
 asyncTest(" for each range (does NOT contain item)", function() {
-
-	function initFunction(event) {			
-		db = event.target.result;
-
-		 if (event.oldVersion <= 1) {
-			var notesStore = db.createObjectStore("notes", { keyPath: "id" });
-			notesStore.createIndex("date", "date", { unique: false });
-		}	   
-	}
 
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date(2012, 1, 2)};
