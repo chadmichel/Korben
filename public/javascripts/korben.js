@@ -14,12 +14,9 @@ var Korben;
 	// You will end accessing a store from this object.
 	// db.store("notes");
 	Korben.DbWrapper = function(initFunction, dbName) {
-		var self = this;
-		self.initFunction = initFunction;
-		self.dbName = dbName;
-		
-		self.store = function(storeName) {
-			return new Korben.StoreWrapper(self.initFunction, self.dbName, storeName);					
+	
+		this.store = function(storeName) {
+			return new Korben.StoreWrapper(initFunction, dbName, storeName);					
 		};
 	};
 	
@@ -27,7 +24,6 @@ var Korben;
 	// Stores provide access to store related functions,
 	// such as put, get, getAll, forEach...
 	Korben.StoreWrapper = function(initFunction, dbName, storeName) {
-		var self = this;	
 		var db = null;	
 		var promise = $.Deferred();
 		var init = initFunction;
@@ -147,9 +143,9 @@ var Korben;
 		};
 		
 		// Iterate over all records that are inside of a range.
-		self.forEachRange = function(index, start, stop, callback) {
+		this.forEachRange = function(index, start, stop, callback) {
 
-			self.execute(function(db) {
+			this.execute(function(db) {
 
 				var tx = db.transaction(storeName, "readwrite");
 				var store = tx.objectStore(storeName);
@@ -182,7 +178,7 @@ var Korben;
 			
 			var resultArray = [];
 			
-			self.forEach(index, function(cursor) {
+			this.forEach(index, function(cursor) {
 				if (cursor === null)
 					def.resolve(resultArray);
 				else
