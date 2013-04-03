@@ -47,11 +47,11 @@ var Korben;
 		self.execute = function(callback) {
 			if (db === null) {
 				self.promise.then(function() { 
-					callback();
+					callback(self.db);
 				});	
 			}
 			else {
-				callback();
+				callback(self.db);
 			}					
 		};
 						
@@ -60,8 +60,8 @@ var Korben;
 			
 			var def = $.Deferred();
 		
-			self.execute(function() { 
-				var tx = self.db.transaction(self.storeName, "readwrite");
+			self.execute(function(db) { 
+				var tx = db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);
 				var req = store.put(object);
 							
@@ -80,11 +80,11 @@ var Korben;
 
 			var def = $.Deferred();
 					
-			self.execute(function() { 
+			self.execute(function(db) { 
 				
 				if (id != null) {
 
-					var tx = self.db.transaction(self.storeName, "readwrite");
+					var tx = db.transaction(self.storeName, "readwrite");
 					var store = tx.objectStore(self.storeName);								
 					var req = store.get(id);	
 				
@@ -112,9 +112,9 @@ var Korben;
 		// Iterate over all records 
 		self.forEach = function(index, callback) {			
 
-			self.execute(function() {
+			self.execute(function(db) {
 				
-				var tx = self.db.transaction(self.storeName, "readwrite");
+				var tx = db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);
 				var req = null;
 			
@@ -143,9 +143,9 @@ var Korben;
 		// Iterate over all records that are inside of a range.
 		self.forEachRange = function(index, start, stop, callback) {
 
-			self.execute(function() {
+			self.execute(function(db) {
 
-				var tx = self.db.transaction(self.storeName, "readwrite");
+				var tx = db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);
 				var req = null;
 			
@@ -206,9 +206,9 @@ var Korben;
 		
 			var def = $.Deferred();
 			
-			self.execute(function() {
+			self.execute(function(db) {
 
-				var tx = self.db.transaction(self.storeName, "readwrite");
+				var tx = db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);			
 				var req = store.clear();
 				
@@ -228,9 +228,9 @@ var Korben;
 			
 			var def = $.Deferred();
 			
-			self.execute(function() {
+			self.execute(function(db) {
 					
-				var tx = self.db.transaction(self.storeName, "readwrite");
+				var tx = db.transaction(self.storeName, "readwrite");
 				var store = tx.objectStore(self.storeName);			
 				var req = store.count();	
 				
