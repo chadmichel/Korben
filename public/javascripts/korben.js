@@ -1,3 +1,11 @@
+//The MIT License (MIT)
+//Copyright (c) 2013 Chad Michel
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// 
+//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 var Korben;
 (function(Korben) {
@@ -42,7 +50,7 @@ var Korben;
 		};
 		
 		// Execute a query, calling this ensures the database has been created.
-		self.execute = function(callback) {
+		this.execute = function(callback) {
 			if (db === null) {
 				promise.then(function() { 
 					callback(db);
@@ -54,11 +62,11 @@ var Korben;
 		};
 						
 		// Put a object into the store. This does both insert and update.				
-		self.put = function(object) {
+		this.put = function(object) {
 			
 			var def = $.Deferred();
 		
-			self.execute(function(db) { 
+			this.execute(function(db) { 
 				var tx = db.transaction(storeName, "readwrite");
 				var store = tx.objectStore(storeName);
 				var req = store.put(object);
@@ -74,11 +82,11 @@ var Korben;
 		};
 		
 		// Get an item from the store. If no item nothing (null) is returned.
-		self.get = function(id) {
+		this.get = function(id) {
 
 			var def = $.Deferred();
 					
-			self.execute(function(db) { 
+			this.execute(function(db) { 
 				
 				if (id != null) {
 
@@ -108,9 +116,9 @@ var Korben;
 		};
 		
 		// Iterate over all records 
-		self.forEach = function(index, callback) {			
+		this.forEach = function(index, callback) {			
 
-			self.execute(function(db) {
+			this.execute(function(db) {
 				
 				var tx = db.transaction(storeName, "readwrite");
 				var store = tx.objectStore(storeName);
@@ -168,7 +176,7 @@ var Korben;
 		};
 		
 		// Get All records in a store.
-		self.getAll = function(index) {
+		this.getAll = function(index) {
 			
 			var def = $.Deferred();
 			
@@ -185,11 +193,11 @@ var Korben;
 		};
 		
 		// Remove all records from a store.
-		self.deleteAll = function() {
+		this.deleteAll = function() {
 		
 			var def = $.Deferred();
 												
-			self.forEach(null, function(cursor) {
+			this.forEach(null, function(cursor) {
 				if (cursor === null)
 					def.resolve();
 				else
@@ -200,11 +208,11 @@ var Korben;
 		};
 		
 		// Clear a store.
-		self.clear = function() {
+		this.clear = function() {
 		
 			var def = $.Deferred();
 			
-			self.execute(function(db) {
+			this.execute(function(db) {
 
 				var tx = db.transaction(storeName, "readwrite");
 				var store = tx.objectStore(storeName);			
@@ -222,11 +230,11 @@ var Korben;
 		}
 		
 		// Return number of records in a store.
-		self.count = function() {
+		this.count = function() {
 			
 			var def = $.Deferred();
 			
-			self.execute(function(db) {
+			this.execute(function(db) {
 					
 				var tx = db.transaction(storeName, "readwrite");
 				var store = tx.objectStore(storeName);			
