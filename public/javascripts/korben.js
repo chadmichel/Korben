@@ -20,38 +20,36 @@ var Korben;
 	// such as put, get, getAll, forEach...
 	Korben.StoreWrapper = function(initFunction, dbName, storeName) {
 		var self = this;	
-		self.db = null;	
-		self.dbName = dbName;
-		self.storeName = storeName;
-		self.promise = $.Deferred();
-		self.init = initFunction;
+		var db = null;	
+		var promise = $.Deferred();
+		var init = initFunction;
 		
-		var request = window.indexedDB.open(dbName, self.init.version);      
+		var request = window.indexedDB.open(dbName, init.version);      
 		var db = null;
             
 		request.onupgradeneeded = function(event) {
-			self.init.upgrade(event);	   
+			init.upgrade(event);	   
 		};
         
 		request.onerror = function(event) {
 			// Do something with request.errorCode!
-			self.promise.reject(event);
+			promise.reject(event);
 		};
 		request.onsuccess = function(event) {
 			// Do something with request.result!
-			self.db = event.target.result;
-			self.promise.resolve();            
+			db = event.target.result;
+			promise.resolve();            
 		};
 		
 		// Execute a query, calling this ensures the database has been created.
 		self.execute = function(callback) {
 			if (db === null) {
-				self.promise.then(function() { 
-					callback(self.db);
+				promise.then(function() { 
+					callback(db);
 				});	
 			}
 			else {
-				callback(self.db);
+				callback(db);
 			}					
 		};
 						
@@ -61,8 +59,8 @@ var Korben;
 			var def = $.Deferred();
 		
 			self.execute(function(db) { 
-				var tx = db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);
+				var tx = db.transaction(storeName, "readwrite");
+				var store = tx.objectStore(storeName);
 				var req = store.put(object);
 							
 				req.onsuccess = function(event) {
@@ -84,8 +82,8 @@ var Korben;
 				
 				if (id != null) {
 
-					var tx = db.transaction(self.storeName, "readwrite");
-					var store = tx.objectStore(self.storeName);								
+					var tx = db.transaction(storeName, "readwrite");
+					var store = tx.objectStore(storeName);								
 					var req = store.get(id);	
 				
 					req.onsuccess = function(event) {				
@@ -114,8 +112,8 @@ var Korben;
 
 			self.execute(function(db) {
 				
-				var tx = db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);
+				var tx = db.transaction(storeName, "readwrite");
+				var store = tx.objectStore(storeName);
 				var req = null;
 			
 				if (index == null || index.length == 0)
@@ -145,8 +143,8 @@ var Korben;
 
 			self.execute(function(db) {
 
-				var tx = db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);
+				var tx = db.transaction(storeName, "readwrite");
+				var store = tx.objectStore(storeName);
 				var req = null;
 			
 				var bound = IDBKeyRange.bound(start, stop);	
@@ -208,8 +206,8 @@ var Korben;
 			
 			self.execute(function(db) {
 
-				var tx = db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);			
+				var tx = db.transaction(storeName, "readwrite");
+				var store = tx.objectStore(storeName);			
 				var req = store.clear();
 				
 				req.onsuccess = function(event) {				
@@ -230,8 +228,8 @@ var Korben;
 			
 			self.execute(function(db) {
 					
-				var tx = db.transaction(self.storeName, "readwrite");
-				var store = tx.objectStore(self.storeName);			
+				var tx = db.transaction(storeName, "readwrite");
+				var store = tx.objectStore(storeName);			
 				var req = store.count();	
 				
 				req.onsuccess = function(event) {				
