@@ -42,7 +42,7 @@ var Korben;
 		};
 		
 		// Execute a query, calling this ensures the database has been created.
-		self.execute = function(callback) {
+		self.execute = function(callback) {		
 			if (db === null) {
 				promise.then(function() { 
 					callback(db);
@@ -50,7 +50,7 @@ var Korben;
 			}
 			else {
 				callback(db);
-			}					
+			}						
 		};
 						
 		// Put a object into the store. This does both insert and update.				
@@ -59,16 +59,22 @@ var Korben;
 			var def = $.Deferred();
 		
 			self.execute(function(db) { 
-				var tx = db.transaction(storeName, "readwrite");
-				var store = tx.objectStore(storeName);
-				var req = store.put(object);
+				
+				try {
+					var tx = db.transaction(storeName, "readwrite");
+					var store = tx.objectStore(storeName);
+					var req = store.put(object);
 							
-				req.onsuccess = function(event) {
-					def.resolve();
-				};
-				req.onerror = function(event) {
-					def.reject(event);
-				};
+					req.onsuccess = function(event) {
+						def.resolve();
+					};
+					req.onerror = function(event) {
+						def.reject(event);
+					};
+				}	
+				catch(err) {
+					def.reject(err);
+				}	
 			});
 			return def;
 		};
@@ -80,27 +86,31 @@ var Korben;
 					
 			self.execute(function(db) { 
 				
-				if (id != null) {
-
-					var tx = db.transaction(storeName, "readwrite");
-					var store = tx.objectStore(storeName);								
-					var req = store.get(id);	
+				try {				
 				
-					req.onsuccess = function(event) {				
-						if (req.result != null)
-							def.resolve(req.result);
-						else
+					if (id != null) {
+
+						var tx = db.transaction(storeName, "readwrite");
+						var store = tx.objectStore(storeName);								
+						var req = store.get(id);	
+				
+						req.onsuccess = function(event) {				
+							if (req.result != null)
+								def.resolve(req.result);
+							else
+								def.resolve(null);
+						};
+						req.onerror = function(event) {
 							def.resolve(null);
-					};
-					req.onerror = function(event) {
-						def.resolve(null);
-					};
-				} else {
-					setTimeout(function() {
-						def.resolve(null);
-					}, 0);
-					
-				}	
+						};
+					} else {
+						setTimeout(function() {
+							def.resolve(null);
+						}, 0);					
+					}	
+				} catch (err) {
+					def.reject(err);
+				}
 				
 			});
 			
