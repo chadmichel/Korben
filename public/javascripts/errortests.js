@@ -67,3 +67,15 @@ asyncTest(" get - no record ", function() {
 	expect(1);
 });
 
+asyncTest(" forEach - no store ", function() {
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("poop");
+
+	store.forEach("poop", function(err, cursor) {		
+		ok(cursor == null);
+		start();
+	});
+	
+	expect(1);
+});

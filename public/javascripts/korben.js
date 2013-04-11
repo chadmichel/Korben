@@ -128,29 +128,38 @@ var Korben;
 
 			this.execute(function(db) {
 				
-				var tx = db.transaction(storeName, "readwrite");
-				var store = tx.objectStore(storeName);
-				var req = null;
+				try {
+					var tx = db.transaction(storeName, "readwrite");
+					var store = tx.objectStore(storeName);
+					var req = null;
 			
-				if (index == null || index.length == 0)
-					req = store.openCursor();
-				else {
-					index = store.index(index);
-					req = index.openKeyCursor();
-				}
+					if (index == null || index.length == 0)
+						req = store.openCursor();
+					else {
+						index = store.index(index);
+						req = index.openKeyCursor();
+					}
 				
-				req.onsuccess = function(event) {
-					if (event !== null && event.target !== null) {
-	                    var cursor = event.target.result;
-	                    if (cursor !== null) {
-	                        if (callback !== null)
-	                            callback(cursor);
-	                        cursor.continue();
-	                    }
-						else
-							callback(null);
-	                }
-	            };
+					req.onsuccess = function(event) {
+						if (event !== null && event.target !== null) {
+		                    var cursor = event.target.result;
+		                    if (cursor !== null) {
+		                        if (callback !== null)
+		                            callback(cursor);
+		                        cursor.continue();
+		                    }
+							else
+								callback(null);
+		                }
+		            };
+				
+					req.onerror = function(event) {
+						callback(null);
+					};
+					
+				} catch (err) {
+					callback(null);
+				}
 			});
 		};
 		
