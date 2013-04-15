@@ -124,7 +124,7 @@ var Korben;
 		};
 		
 		// Iterate over all records 
-		this.forEach = function(index, callback) {			
+		this.forEach = function(params) {			
 
 			this.execute(function(db) {
 				
@@ -133,10 +133,10 @@ var Korben;
 					var store = tx.objectStore(storeName);
 					var req = null;
 			
-					if (index == null || index.length == 0)
+					if (params.index == null || params.index.length == 0)
 						req = store.openCursor();
 					else {
-						index = store.index(index);
+						index = store.index(params.index);
 						req = index.openKeyCursor();
 					}
 				
@@ -144,27 +144,30 @@ var Korben;
 						if (event !== null && event.target !== null) {
 		                    var cursor = event.target.result;
 		                    if (cursor !== null) {
-		                        if (callback !== null)
-		                            callback(cursor);
+		                        if (params.callback !== null)
+		                            params.callback(cursor);
 		                        cursor.continue();
 		                    }
 							else
-								callback(null);
+								params.callback(null);
 		                }
 		            };
 				
 					req.onerror = function(event) {
-						callback(null);
+						params.error(event);
 					};
 					
 				} catch (err) {
-					callback(null);
+					if (params.error != null)
+						params.error(err);
 				}
 			});
 		};
 		
 		// Iterate over all records that are inside of a range.
-		this.forEachRange = function(index, start, stop, callback) {
+		this.forEachRange = function(params) {
+
+			//	index, start, stop, callback		
 
 			this.execute(function(db) {
 
@@ -172,21 +175,21 @@ var Korben;
 				var store = tx.objectStore(storeName);
 				var req = null;
 			
-				var bound = IDBKeyRange.bound(start, stop);	
+				var bound = IDBKeyRange.bound(params.start, params.stop);	
 
-				index = store.index(index);
+				index = store.index(params.index);
 				req = index.openKeyCursor(bound);
 				
 				req.onsuccess = function(event) {
 					if (event !== null && event.target !== null) {
 	                    var cursor = event.target.result;
 	                    if (cursor != null) {
-	                        if (callback !== null)
-	                            callback(cursor.key, cursor.primaryKey);
+	                        if (params.callback !== null)
+	                            params.callback(cursor.key, cursor.primaryKey);
 	                        cursor.continue();
 	                    }
 						else
-							callback(null, null);
+							params.callback(null, null);
 	                }
 	            };												
 			});
@@ -197,14 +200,17 @@ var Korben;
 			
 			var def = $.Deferred();
 			
-			var resultArray = [];
+			var resultArray = [];			
 			
-			this.forEach(index, function(cursor) {
-				if (cursor === null)
-					def.resolve(resultArray);
-				else
-					resultArray.push(cursor.value);
-			});
+			this.forEach({
+				index: index,
+				callback: function(cursor) {
+					if (cursor === null)
+						def.resolve(resultArray);
+					else
+						resultArray.push(cursor.value);
+					},
+			}); 		
 			
 			return def; // return promise		
 		};
@@ -214,11 +220,14 @@ var Korben;
 		
 			var def = $.Deferred();
 												
-			this.forEach(null, function(cursor) {
-				if (cursor === null)
-					def.resolve();
-				else
-					cursor.delete();
+			this.forEach({
+				index: null,
+				callback: function(cursor) {
+					if (cursor === null)
+						def.resolve();
+					else
+						cursor.delete();
+					}
 			});
 			
 			return def; // return promise		

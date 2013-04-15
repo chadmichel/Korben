@@ -72,9 +72,12 @@ asyncTest(" forEach - no store ", function() {
 	var db = Korben.db(initFunction, "SomeNotes");
 	var store = db.store("poop");
 
-	store.forEach("poop", function(err, cursor) {		
-		ok(cursor == null);
-		start();
+	store.forEach({
+		index: "poop",
+		error: function(error) {		
+				ok(error != null);
+				start();
+			}
 	});
 	
 	expect(1);

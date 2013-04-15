@@ -123,15 +123,18 @@ asyncTest(" for each range (contains item)", function() {
 
 	store.clear().then(function() {
 		store.put(note).then(function() {
-			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
-				function(key, primaryKey) {
+			store.forEachRange({
+				index: "date", 
+				start: new Date(2013, 1, 1), 
+				stop: new Date(2013, 1, 3), 
+				callback: function(key, primaryKey) {
 					if (key != null) {
 						ok(key != null);					
 						ok(primaryKey === id);
 						start();
 					}
 				}
-			);
+			});
 		});
 	});	
 	
@@ -148,15 +151,18 @@ asyncTest(" for each range (contains item)", function() {
 
 	store.clear().then(function() {
 		store.put(note).then(function() {
-			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
-				function(key, primaryKey) {
+			store.forEachRange({
+				index: "date", 
+				start: new Date(2013, 1, 1), 
+				stop: new Date(2013, 1, 3), 
+				callback: function(key, primaryKey) {
 					if (key != null) {
 						ok(key != null);					
 						ok(primaryKey === id);
 						start();
 					}
 				}
-			);
+			});
 		});
 	});	
 	
@@ -178,15 +184,18 @@ asyncTest(" for each range int (contains muiltiple items)", function() {
 	store.clear().then(function() {
 		store.put(intRange).then(function() {
 			store.put(intRange2).then(function() {
-				store.forEachRange("intColumn", 0, 3, 
-					function(key, primaryKey) {
+				store.forEachRange({
+					index: "intColumn", 
+					start: 0, 
+					stop: 3, 
+					callback: function(key, primaryKey) {
 						if (key != null) {
 							ok(key != null);					
 							if (primaryKey == id2)
 								start();
 						}
 					}
-				);
+				});
 			});
 		});
 	});	
@@ -204,8 +213,11 @@ asyncTest(" for each range (get item)", function() {
 
 	store.clear().then(function() {
 		store.put(note).then(function() {
-			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
-				function(key, primaryKey) {
+			store.forEachRange({
+				index: "date", 
+				start: new Date(2013, 1, 1), 
+				stop: new Date(2013, 1, 3), 
+				callback: function(key, primaryKey) {
 					if (key !== null) {
 						store.get(primaryKey).then(function(item) {
 							ok(item !== null);
@@ -215,7 +227,7 @@ asyncTest(" for each range (get item)", function() {
 						});
 					}
 				}				
-			);
+			});
 		});
 	});	
 	
@@ -232,8 +244,11 @@ asyncTest(" for each range (does NOT contain item)", function() {
 
 	store.clear().then(function() {
 		store.put(note).then(function() {
-			store.forEachRange("date", new Date(2013, 1, 1), new Date(2013, 1, 3), 
-				function(key, primaryKey) {
+			store.forEachRange({
+				index: "date", 
+				start: new Date(2013, 1, 1), 
+				stop: new Date(2013, 1, 3), 
+				callback: function(key, primaryKey) {
 					if (key === null) {
 						ok(key === null);
 						start();
@@ -241,7 +256,7 @@ asyncTest(" for each range (does NOT contain item)", function() {
 					else
 						ok(key !== null); // this will blow up if data returned
 				}
-			);
+			});
 		});
 	});	
 	
