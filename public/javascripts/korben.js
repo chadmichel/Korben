@@ -144,12 +144,16 @@ var Korben;
 						if (event !== null && event.target !== null) {
 		                    var cursor = event.target.result;
 		                    if (cursor !== null) {
-		                        if (params.callback !== null)
+		                        if (params.callback != null)
 		                            params.callback(cursor);
 		                        cursor.continue();
 		                    }
-							else
-								params.callback(null);
+							else {
+								if (params.callback != null)
+									params.callback(null);
+								if (params.last != null)
+									params.last();		
+							}
 		                }
 		            };
 				
@@ -205,11 +209,12 @@ var Korben;
 			this.forEach({
 				index: index,
 				callback: function(cursor) {
-					if (cursor === null)
-						def.resolve(resultArray);
-					else
-						resultArray.push(cursor.value);
+						if (cursor != null)
+							resultArray.push(cursor.value);
 					},
+				last: function() {
+						def.resolve(resultArray);
+					}
 			}); 		
 			
 			return def; // return promise		

@@ -82,3 +82,36 @@ asyncTest(" forEach - no store ", function() {
 	
 	expect(1);
 });
+
+asyncTest(" forEach - no callback, no error ", function() {
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.forEach({
+		index: "date",
+		last: function() {		
+				start();
+			}
+	});
+	
+	expect(0);
+});
+
+asyncTest(" forEachRange - no store ", function() {
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("poop");
+
+	store.forEach({
+		index: "poop",
+		start: 0,
+		stop: 1,
+		error: function(error) {		
+				ok(error != null);
+				start();
+			}
+	});
+	
+	expect(1);
+});
