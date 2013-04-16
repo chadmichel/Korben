@@ -31,7 +31,131 @@
         <hr>
 
         <section id="main_content">
-          <h3>KORBEN</h3>
+          <h1>Korben</h1>
+
+<p><a href="public/javascripts/korben.js">Source Code</a></p>
+
+<p>Library for simplifying access to IndexedDB.</p>
+
+<p>IndexedDB is a power data store that runs within the context of the browser. Many browsers support it: Chrome, FireFox, and IE 10 with hopes that Safari will support it soon. </p>
+
+<p>IndexedDB allows for a richer applications on the client by enabling the data to be stored on the client. Moving data to the client has 3 primary benefits.</p>
+
+<ul>
+<li>Better performance than server side calls.</li>
+<li>Off-load work from the server to the client.</li>
+<li>With offline caching (HTML5 feature) you can have a fully disconnected application.</li>
+</ul><h1>Why Korben?</h1>
+
+<p>I was trying to use IndexedDB in a very simple application and I found it's API awkward to use. With IndexedDB I felt like it required a lot of setup and teardown ot make the calls I wanted, which were pretty basic.</p>
+
+<h1>Why call it Korben?</h1>
+
+<p>It is the name of my dog, no good reason :)</p>
+
+<h1>Any dependencies?</h1>
+
+<p>JQuery, Korben uses JQuery's deferred library. <a href="http://api.jquery.com/category/deferred-object/">JQuery Deferred</a></p>
+
+<h1>Are there any unit tests?</h1>
+
+<p>Of course there are (or is it 'is'?). To run the unit tests you will need to have something running that can host the files. I use <a href="http://nodejs.org/">node</a> for that. You could host the unit tests in any web server, but it must be a web server. IndexedDB will not work against a file:// based path.</p>
+
+<p>At the time of this writting there are 22 unit tests, all passing. To run them (as I do) fire up node (node app.js). Then navigate to localhost:3000. That will run all the unit tests. </p>
+
+<p>Unit tests are contained in two JavaScript files. </p>
+
+<ul>
+<li><a href="public/javascripts/smoketests.js">smoke tests</a></li>
+<li><a href="public/javascripts/errortests.js">error tests</a></li>
+</ul><p>Unit tests were written using <a href="http://qunitjs.com/">QUnit</a>.</p>
+
+<h1>License?</h1>
+
+<p>MIT</p>
+
+<h1>How to use?</h1>
+
+<p>Korben has a pretty simple API. Things such as putting a record into IndexedDB is very simple. The API often makes use of JQuery's deferred class.</p>
+
+<h2>Put / Get Example</h2>
+
+<div class="highlight"><pre>
+    <span class="c1">// First we will setup a record to insert.</span>
+    <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">UUID</span><span class="p">.</span><span class="nx">generate</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">note</span> <span class="o">=</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">"a title"</span><span class="p">,</span> <span class="nx">date</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">()};</span>
+
+    <span class="c1">// Next we must open the database.</span>
+    <span class="kd">var</span> <span class="nx">db</span> <span class="o">=</span> <span class="nx">Korben</span><span class="p">.</span><span class="nx">db</span><span class="p">(</span><span class="nx">initFunction</span><span class="p">,</span> <span class="s2">"SomeNotes"</span><span class="p">);</span>
+    <span class="c1">// Then open the store.</span>
+    <span class="kd">var</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">store</span><span class="p">(</span><span class="s2">"notes"</span><span class="p">);</span>
+
+    <span class="c1">// Once we have a valid store we can put records into the store.</span>
+    <span class="c1">// put / get return a JQuery deferred object. Call then to wait</span>
+    <span class="c1">// for the operation to complete.</span>
+    <span class="nx">store</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">note</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// Get takes a single parameter, the id of the record to find.</span>
+        <span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">loaded</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// then will be called once record is loaded.</span>
+            <span class="c1">// If record is not found loaded will be null.</span>
+            <span class="nx">ok</span><span class="p">(</span><span class="nx">loaded</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">note</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="nx">start</span><span class="p">();</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+
+
+</pre></div>
+
+<h2>What is initFunction in the previous demo?</h2>
+
+<p>How dare you try and sneak that past me!</p>
+
+<p>When creating your database you need to provide a JavaScript object that will be loaded to creaet / initialize the database.</p>
+
+<div class="highlight"><pre>
+<span class="c1">// The init object is required to initialize your IndexedDB database.</span>
+<span class="c1">// Your init object must contain a version property version: 4 below.</span>
+<span class="c1">// Your init object must also have an update function.</span>
+<span class="kd">var</span> <span class="nx">initFunction</span> <span class="o">=</span> <span class="p">{</span>            
+
+    <span class="c1">// Schema version of the database.</span>
+    <span class="nx">version</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span>
+
+    <span class="c1">// This function will be called when an upgrade of the database is required.</span>
+    <span class="c1">// You will have to write something like this function for your database.</span>
+    <span class="c1">// The event passed is an IndexedDB object, on that object you will have to</span>
+    <span class="c1">// create the object stores you intend to create.</span>
+    <span class="nx">upgrade</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">db</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">result</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">oldVersion</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// If we are just getting started lets create a 'notes' store for unit testing.</span>
+            <span class="kd">var</span> <span class="nx">notesStore</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">createObjectStore</span><span class="p">(</span><span class="s2">"notes"</span><span class="p">,</span> <span class="p">{</span> <span class="nx">keyPath</span><span class="o">:</span> <span class="s2">"id"</span> <span class="p">});</span>
+            <span class="nx">notesStore</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">(</span><span class="s2">"date"</span><span class="p">,</span> <span class="s2">"date"</span><span class="p">,</span> <span class="p">{</span> <span class="nx">unique</span><span class="o">:</span> <span class="kc">false</span> <span class="p">});</span>
+        <span class="p">}</span>      
+        <span class="k">if</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">oldVersion</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Add an integer store for unit testing.</span>
+            <span class="kd">var</span> <span class="nx">intidStore</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">createObjectStore</span><span class="p">(</span><span class="s2">"intid"</span><span class="p">,</span> <span class="p">{</span> <span class="nx">keyPath</span><span class="o">:</span> <span class="s2">"id"</span> <span class="p">});</span>          
+        <span class="p">}</span>      
+
+        <span class="k">if</span> <span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">oldVersion</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Add a integer range store for unit testing.</span>
+            <span class="kd">var</span> <span class="nx">intRangeStore</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">createObjectStore</span><span class="p">(</span><span class="s2">"intrange"</span><span class="p">,</span> <span class="p">{</span> <span class="nx">keyPath</span><span class="o">:</span> <span class="s2">"id"</span> <span class="p">});</span>
+            <span class="nx">intRangeStore</span><span class="p">.</span><span class="nx">createIndex</span><span class="p">(</span><span class="s2">"intColumn"</span><span class="p">,</span> <span class="s2">"intColumn"</span><span class="p">,</span> <span class="p">{</span> <span class="nx">unique</span><span class="o">:</span> <span class="kc">false</span> <span class="p">});</span>
+        <span class="p">}</span>      
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<h1>Where is the library?</h1>
+
+<p><a href="public/javascripts/korben.js">Source Code</a></p>
+
+<h1>Helpful links about IndexedDB</h1>
+
+<p><a href="https://developer.mozilla.org/en-US/docs/IndexedDB">https://developer.mozilla.org/en-US/docs/IndexedDB</a>
+<a href="http://www.w3.org/TR/IndexedDB/">http://www.w3.org/TR/IndexedDB/</a></p>
         </section>
 
         <footer>
