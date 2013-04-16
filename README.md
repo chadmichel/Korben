@@ -1,6 +1,7 @@
 Korben
 ======
-
+[Source] (public/javascripts/korben.js)
+ 
 Library for simplifying access to IndexedDB.
 
 IndexedDB is a power data store that runs within the context of the browser. Many browsers support it: Chrome, FireFox, and IE 10 with hopes that Safari will support it soon. 
@@ -20,10 +21,16 @@ It is the name of my dog, no good reason :)
 
 JQuery, Korben uses JQuery's deferred library.
 
+#Are there any unit tests?
+
+Of course there are (or is it 'is'?). To run the unit tests you will need to have something running that can host the files. I use [node] (http://nodejs.org/) for that. You could host the unit tests in any web server, but it must be a web server. IndexedDB will not work against a file:// based path.
+
 #How to use?
 
 Korben has a pretty simple API. Things such as putting a record into IndexedDB is very simple. The API often makes use of JQuery's deferred class.
 
 
 # Where is the library?
+
+[Source] (public/javascripts/korben.js)
 
