@@ -1,6 +1,6 @@
 Korben
 ======
-[Source Code] (public/javascripts/korben.js)
+[Source Code] (https://github.com/chadmichel/Korben/blob/master/public/javascripts/korben.js)
  
 Library for simplifying access to IndexedDB.
 
@@ -28,8 +28,8 @@ Of course there are (or is it 'is'?). To run the unit tests you will need to hav
 At the time of this writting there are 22 unit tests, all passing. To run them (as I do) fire up node (node app.js). Then navigate to localhost:3000. That will run all the unit tests. 
 
 Unit tests are contained in two JavaScript files. 
-* [smoke tests] (public/javascripts/smoketests.js)
-* [error tests] (public/javascripts/errortests.js)
+* [smoke tests] (https://github.com/chadmichel/Korben/blob/master/public/javascripts/smoketests.js)
+* [error tests] (https://github.com/chadmichel/Korben/blob/master/public/javascripts/errortests.js)
 
 Unit tests were written using [QUnit] (http://qunitjs.com/).
 
@@ -113,7 +113,7 @@ var initFunction = {
 
 # Where is the library?
 
-[Source Code] (public/javascripts/korben.js)
+[Source Code] (https://github.com/chadmichel/Korben/blob/master/public/javascripts/korben.js)
 
 # Helpful links about IndexedDB
 
