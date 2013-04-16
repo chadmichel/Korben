@@ -42,7 +42,7 @@ Korben has a pretty simple API. Things such as putting a record into IndexedDB i
 
 ## Put / Get Example
 
-''' JavaScript
+```javascript
 
  var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
@@ -57,9 +57,14 @@ Korben has a pretty simple API. Things such as putting a record into IndexedDB i
 		});
 	});
 
-'''
+```
 
 # Where is the library?
 
 [Source Code] (public/javascripts/korben.js)
+
+# Helpful links about IndexedDB
+
+https://developer.mozilla.org/en-US/docs/IndexedDB
+http://www.w3.org/TR/IndexedDB/
 
