@@ -19,11 +19,19 @@ It is the name of my dog, no good reason :)
 
 #Any dependencies?
 
-JQuery, Korben uses JQuery's deferred library.
+JQuery, Korben uses JQuery's deferred library. [JQuery Deferred] (http://api.jquery.com/category/deferred-object/)
 
 #Are there any unit tests?
 
 Of course there are (or is it 'is'?). To run the unit tests you will need to have something running that can host the files. I use [node] (http://nodejs.org/) for that. You could host the unit tests in any web server, but it must be a web server. IndexedDB will not work against a file:// based path.
+
+At the time of this writting there are 22 unit tests, all passing. To run them (as I do) fire up node (node app.js). Then navigate to localhost:3000. That will run all the unit tests. 
+
+Unit tests are contained in two JavaScript files. 
+* [smoke tests] (public/javascripts/smoketests.js)
+* [error tests] (public/javascripts/errortests.js)
+
+Unit tests were written using [QUnit] (http://qunitjs.com/).
 
 #How to use?
 
