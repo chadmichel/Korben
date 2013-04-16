@@ -1,6 +1,6 @@
 Korben
 ======
-[Source] (public/javascripts/korben.js)
+[Source Code] (public/javascripts/korben.js)
  
 Library for simplifying access to IndexedDB.
 
@@ -33,12 +33,33 @@ Unit tests are contained in two JavaScript files.
 
 Unit tests were written using [QUnit] (http://qunitjs.com/).
 
+#License?
+MIT
+
 #How to use?
 
 Korben has a pretty simple API. Things such as putting a record into IndexedDB is very simple. The API often makes use of JQuery's deferred class.
 
+## Put / Get Example
+
+''' JavaScript
+
+ var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.put(note).then(function() {
+		store.get(id).then(function(loaded) {
+			ok(loaded.id === note.id);
+			start();
+		});
+	});
+
+'''
 
 # Where is the library?
 
-[Source] (public/javascripts/korben.js)
+[Source Code] (public/javascripts/korben.js)
 
