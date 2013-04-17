@@ -61,8 +61,7 @@ Korben has a pretty simple API. Things such as putting a record into IndexedDB i
 		store.get(id).then(function(loaded) {
 			// then will be called once record is loaded.
 			// If record is not found loaded will be null.
-			ok(loaded.id === note.id);
-			start();
+			// You can now use the loaded object...			
 		});
 	});
 
@@ -108,6 +107,24 @@ var initFunction = {
 		}	   
 	}
 }
+
+```
+
+## What if I want to get all records?
+
+Retrieving all records can be done with the store.getAll method.
+
+```javascript
+
+// Create db object.
+var db = Korben.db(initFunction, "SomeNotes");
+// Open store named "notes"
+var store = db.store("notes");
+
+// Call getAll to retrieve all records in the "notes" store.
+store.getAll().then(function(loaded) {
+	// Loaded is an array with all objects.
+});
 
 ```
 
