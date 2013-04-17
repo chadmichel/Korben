@@ -89,6 +89,7 @@ asyncTest(" update record ", function() {
 
 asyncTest(" getAll ", function() {
 
+	//
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date()};
 	
@@ -100,6 +101,24 @@ asyncTest(" getAll ", function() {
 			ok(loaded.length > 0);
 			start();
 		});
+	});
+	
+	expect(1);
+});
+
+asyncTest(" getAll no data", function() {
+
+	// Create db object.
+	var db = Korben.db(initFunction, "SomeNotes");
+	// Open store named "notes"
+	var store = db.store("notes");
+
+	// Call getAll to retrieve all records in the "notes" store.
+	store.getAll().then(function(loaded) {
+		// loaded will be an array of all records in "notes" store.
+		// If no records it should be an empty array.
+		ok(loaded != null);
+		start();
 	});
 	
 	expect(1);
