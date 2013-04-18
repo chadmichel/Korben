@@ -263,9 +263,9 @@ asyncTest(" for each range (get item)", function() {
 							start();
 						});
 					}
+				},
 				last: function() {
-						// Called after processing all records inside the range.
-					}
+						// Called after processing all records inside the range.					
 				}				
 			});
 		});
