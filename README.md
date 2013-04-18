@@ -36,6 +36,12 @@ Unit tests were written using [QUnit] (http://qunitjs.com/).
 #License?
 MIT
 
+#Key Concepts?
+IndexedDB is a key/value store, with the ability to create indexes on individual columns. The first level item of an IndexedDB database, is the database itself. A single site can have mutliple databases, each will have their own name.
+
+Within IndexedDB database you have multiple stores, each store can contain a set of objects. The objects within a store can contain different object schemas, there is no requirement that all the objects must be the same within a single store.
+
+
 #How to use?
 
 Korben has a pretty simple API. Things such as putting a record into IndexedDB is very simple. The API often makes use of JQuery's deferred class.
@@ -156,10 +162,7 @@ store.clear().then(function() {
 				// Called for each record inside the range.
 				if (key !== null) {
 					store.get(primaryKey).then(function(item) {
-						ok(item !== null);
-						ok(item.id === id);
-						ok(item.title == note.title);
-						start();
+						// Now you have an item inside the range!!!
 					});
 				}
 			last: function() {
