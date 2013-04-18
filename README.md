@@ -4,7 +4,7 @@ Korben
  
 Library for simplifying access to IndexedDB.
 
-IndexedDB is a power data store that runs within the context of the browser. Many browsers support it: Chrome, FireFox, and IE 10 with hopes that Safari will support it soon. 
+IndexedDB is a power data store that runs within the context of the browser. Many browsers support it: Chrome, FireFox, and IE 10.
 
 IndexedDB allows for a richer applications on the client by enabling the data to be stored on the client. Moving data to the client has 3 primary benefits.
 * Better performance than server side calls.
@@ -40,6 +40,12 @@ MIT
 IndexedDB is a key/value store, with the ability to create indexes on individual columns. The first level item of an IndexedDB database, is the database itself. A single site can have mutliple databases, each will have their own name.
 
 Within IndexedDB database you have multiple stores, each store can contain a set of objects. The objects within a store can contain different object schemas, there is no requirement that all the objects must be the same within a single store.
+
+Indexes can be added to any property within a store. Indexes allow you to quickly and easily iterate over all records in index order. 
+
+What could you use an index for?
+* Iterate over all records by a date field.
+* Find all records that have property whose value is between 100 and 200.
 
 
 #How to use?
