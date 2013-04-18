@@ -52,6 +52,8 @@ What could you use an index for?
 
 Korben has a pretty simple API. Things such as putting a record into IndexedDB is very simple. The API often makes use of JQuery's deferred class.
 
+For more API definition look at [API](https://github.com/chadmichel/Korben/wiki/API).
+
 ## Put / Get Example
 
 ```javascript
