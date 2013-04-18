@@ -37,7 +37,7 @@
 
 <p>Library for simplifying access to IndexedDB.</p>
 
-<p>IndexedDB is a power data store that runs within the context of the browser. Many browsers support it: Chrome, FireFox, and IE 10 with hopes that Safari will support it soon. </p>
+<p>IndexedDB is a power data store that runs within the context of the browser. Many browsers support it: Chrome, FireFox, and IE 10.</p>
 
 <p>IndexedDB allows for a richer applications on the client by enabling the data to be stored on the client. Moving data to the client has 3 primary benefits.</p>
 
@@ -74,9 +74,24 @@
 
 <p>MIT</p>
 
-<h1>How to use?</h1>
+<h1>Key Concepts?</h1>
+
+<p>IndexedDB is a key/value store, with the ability to create indexes on individual columns. The first level item of an IndexedDB database, is the database itself. A single site can have mutliple databases, each will have their own name.</p>
+
+<p>Within IndexedDB database you have multiple stores, each store can contain a set of objects. The objects within a store can contain different object schemas, there is no requirement that all the objects must be the same within a single store.</p>
+
+<p>Indexes can be added to any property within a store. Indexes allow you to quickly and easily iterate over all records in index order. </p>
+
+<p>What could you use an index for?</p>
+
+<ul>
+<li>Iterate over all records by a date field.</li>
+<li>Find all records that have property whose value is between 100 and 200.</li>
+</ul><h1>How to use?</h1>
 
 <p>Korben has a pretty simple API. Things such as putting a record into IndexedDB is very simple. The API often makes use of JQuery's deferred class.</p>
+
+<p>For more API definition look at <a href="https://github.com/chadmichel/Korben/wiki/API">API</a>.</p>
 
 <h2>Put / Get Example</h2>
 
@@ -98,8 +113,7 @@
         <span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">id</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">loaded</span><span class="p">)</span> <span class="p">{</span>
             <span class="c1">// then will be called once record is loaded.</span>
             <span class="c1">// If record is not found loaded will be null.</span>
-            <span class="nx">ok</span><span class="p">(</span><span class="nx">loaded</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">note</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
-            <span class="nx">start</span><span class="p">();</span>
+            <span class="c1">// You can now use the loaded object...         </span>
         <span class="p">});</span>
     <span class="p">});</span>
 
@@ -145,6 +159,64 @@
         <span class="p">}</span>      
     <span class="p">}</span>
 <span class="p">}</span>
+
+</pre></div>
+
+<h2>What if I want to get all records?</h2>
+
+<p>Retrieving all records can be done with the store.getAll method.</p>
+
+<div class="highlight"><pre>
+<span class="c1">// Create db object.</span>
+<span class="kd">var</span> <span class="nx">db</span> <span class="o">=</span> <span class="nx">Korben</span><span class="p">.</span><span class="nx">db</span><span class="p">(</span><span class="nx">initFunction</span><span class="p">,</span> <span class="s2">"SomeNotes"</span><span class="p">);</span>
+<span class="c1">// Open store named "notes"</span>
+<span class="kd">var</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">store</span><span class="p">(</span><span class="s2">"notes"</span><span class="p">);</span>
+
+<span class="c1">// Call getAll to retrieve all records in the "notes" store.</span>
+<span class="nx">store</span><span class="p">.</span><span class="nx">getAll</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">loaded</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Loaded is an array with all objects.</span>
+<span class="p">});</span>
+
+</pre></div>
+
+<h2>What if I want to get all inside of a range?</h2>
+
+<p>(iterate over an index)</p>
+
+<div class="highlight"><pre>
+<span class="c1">// Create sample item.</span>
+<span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">UUID</span><span class="p">.</span><span class="nx">generate</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">note</span> <span class="o">=</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">"a title"</span><span class="p">,</span> <span class="nx">date</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)};</span>
+
+<span class="c1">// Create database object.</span>
+<span class="kd">var</span> <span class="nx">db</span> <span class="o">=</span> <span class="nx">Korben</span><span class="p">.</span><span class="nx">db</span><span class="p">(</span><span class="nx">initFunction</span><span class="p">,</span> <span class="s2">"SomeNotes"</span><span class="p">);</span>
+<span class="c1">// Create store object.</span>
+<span class="kd">var</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">store</span><span class="p">(</span><span class="s2">"notes"</span><span class="p">);</span>
+
+<span class="c1">// Call clear to reset object store to a blank object store.</span>
+<span class="nx">store</span><span class="p">.</span><span class="nx">clear</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Add sample record.</span>
+    <span class="nx">store</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">note</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// Call forEachRange to retrieve objects inside of range.</span>
+        <span class="c1">// callback, will be called for each item inside of range.</span>
+        <span class="nx">store</span><span class="p">.</span><span class="nx">forEachRange</span><span class="p">({</span>
+            <span class="nx">index</span><span class="o">:</span> <span class="s2">"date"</span><span class="p">,</span> 
+            <span class="nx">start</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> 
+            <span class="nx">stop</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> 
+            <span class="nx">callback</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">primaryKey</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">// Called for each record inside the range.</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">key</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">primaryKey</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="c1">// Now you have an item inside the range!!!</span>
+                    <span class="p">});</span>
+                <span class="p">}</span>
+            <span class="nx">last</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="c1">// Called after processing all records inside the range.</span>
+                <span class="p">}</span>
+            <span class="p">}</span>               
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">});</span>
 
 </pre></div>
 
