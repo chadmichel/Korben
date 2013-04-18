@@ -234,19 +234,27 @@ asyncTest(" for each range int (contains muiltiple items)", function() {
 
 asyncTest(" for each range (get item)", function() {
 
+	// Create sample item.
 	var id = UUID.generate();
 	var note = {id: id, title: "a title", date: new Date(2013, 1, 2)};
 	
+	// Create database object.
 	var db = Korben.db(initFunction, "SomeNotes");
+	// Create store object.
 	var store = db.store("notes");
 
+	// Call clear to reset object store to a blank object store.
 	store.clear().then(function() {
+		// Add sample record.
 		store.put(note).then(function() {
+			// Call forEachRange to retrieve objects inside of range.
+			// callback, will be called for each item inside of range.
 			store.forEachRange({
 				index: "date", 
 				start: new Date(2013, 1, 1), 
 				stop: new Date(2013, 1, 3), 
 				callback: function(key, primaryKey) {
+					// Called for each record inside the range.
 					if (key !== null) {
 						store.get(primaryKey).then(function(item) {
 							ok(item !== null);
@@ -254,6 +262,9 @@ asyncTest(" for each range (get item)", function() {
 							ok(item.title == note.title);
 							start();
 						});
+					}
+				last: function() {
+						// Called after processing all records inside the range.
 					}
 				}				
 			});
