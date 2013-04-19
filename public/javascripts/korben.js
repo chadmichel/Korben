@@ -311,8 +311,9 @@
 		window.Korben = Korben;
 	}
 	else {
-		// AMD, lets use it
-		
+		define(function() {
+			return Korben;
+		});
 	}
 
 }) ();
