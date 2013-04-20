@@ -193,8 +193,12 @@
 	                            params.callback(cursor.key, cursor.primaryKey);
 	                        cursor.continue();
 	                    }
-						else
-							params.callback(null, null);
+						else {
+							if (params.callback != null)
+								params.callback(null, null);
+							if (params.last != null)
+								params.last();
+						}
 	                }
 	            };												
 			});
@@ -232,7 +236,7 @@
 					if (cursor === null)
 						def.resolve();
 					else
-						cursor.delete();
+						cursor.delete(); // delete each item
 					}
 			});
 			
@@ -248,6 +252,7 @@
 
 				var tx = db.transaction(storeName, "readwrite");
 				var store = tx.objectStore(storeName);			
+				// call IndexedDB method clear
 				var req = store.clear();
 				
 				req.onsuccess = function(event) {				
@@ -269,7 +274,8 @@
 			this.execute(function(db) {
 					
 				var tx = db.transaction(storeName, "readwrite");
-				var store = tx.objectStore(storeName);			
+				var store = tx.objectStore(storeName);		
+				// call IndexedDB method count	
 				var req = store.count();	
 				
 				req.onsuccess = function(event) {				
