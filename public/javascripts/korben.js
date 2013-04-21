@@ -180,7 +180,13 @@
 				var store = tx.objectStore(storeName);
 				var req = null;
 			
-				var bound = IDBKeyRange.bound(params.start, params.stop);	
+				var bound = null;
+				if (params.start != null && params.stop != null)
+					bound = IDBKeyRange.bound(params.start, params.stop);	
+				else if (params.start != null)
+					bound = IDBKeyRange.lowerBound(params.start);	
+				else if (params.stop != null)
+						bound = IDBKeyRange.upperBound(params.stop);	
 
 				index = store.index(params.index);
 				req = index.openKeyCursor(bound);
