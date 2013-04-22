@@ -306,6 +306,38 @@ asyncTest(" for each range (no end)", function() {
 	expect(3);
 });
 
+asyncTest(" for each range int (no start)", function() {
+
+	var id = UUID.generate();
+	var intRange = {id: id, title: "a title", intColumn: 1};
+	
+	var id2 = UUID.generate();
+	var intRange2 = {id: id2, title: "a title", intColumn: 2};
+		
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("intrange");
+
+	store.clear().then(function() {
+		store.put(intRange).then(function() {
+			store.put(intRange2).then(function() {
+				store.forEachRange({
+					index: "intColumn", 
+					stop: 3, 
+					callback: function(key, primaryKey) {
+						if (key != null) {
+							ok(key != null);					
+							if (primaryKey == id2)
+								start();
+						}
+					}
+				});
+			});
+		});
+	});	
+	
+	expect(2);
+});
+
 asyncTest(" for each range (does NOT contain item)", function() {
 
 	var id = UUID.generate();
