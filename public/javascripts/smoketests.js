@@ -142,6 +142,30 @@ asyncTest(" getAll by Index ", function() {
 	expect(1);
 });
 
+asyncTest(" forEach ", function() {
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.clear().then(function() {
+		store.put(note).then(function() {
+			store.forEach({
+				callback: function(cursor) {
+					if (cursor != null) 
+						ok(cursor.value.id == id);
+					else
+						start();
+				}
+			});
+		});
+	});
+	
+	expect(1);
+});
+
 asyncTest(" for each range (contains item)", function() {
 
 	var id = UUID.generate();
