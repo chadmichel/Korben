@@ -166,6 +166,37 @@ asyncTest(" forEach ", function() {
 	expect(1);
 });
 
+asyncTest(" forEach using last", function() {
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	// clear the store
+	store.clear().then(function() {
+		// add a single item to store for testing purposes.
+		store.put(note).then(function() {
+			// iterate over all items in the store (1 item)
+			store.forEach({
+				// callback will be called for all items.
+				// and with a null when we have reached then end.
+				callback: function(cursor) {
+					if (cursor != null) 
+						ok(cursor.value.id == id);					
+				},
+				// last will be called after last item has been processed.
+				last: function() {
+					start();
+				}
+			});
+		});
+	});
+	
+	expect(1);
+});
+
 asyncTest(" for each range (contains item)", function() {
 
 	var id = UUID.generate();
@@ -453,4 +484,60 @@ asyncTest(" clear ", function() {
 	});
 	
 	expect(1);
+});
+
+asyncTest(" delete ", function() {
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	store.put(note).then(function() {
+		// delete takes a single parameter, the key of the item to delete.
+		store.delete(id).then(function() {
+			store.get(id).then(function(loaded) {
+				ok(loaded == null);
+				start();
+			});
+		});
+	});
+	
+	// One assertion above (ok)
+	expect(1);
+});
+
+asyncTest(" delete no record", function() {
+
+	var id = UUID.generate();
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	// delete takes a single parameter, the key of the item to delete.
+	store.delete(id).then(function() {
+		start();
+	});
+	
+	// One assertion above (ok)
+	expect(0);
+});
+
+asyncTest(" delete null ", function() {
+
+	var id = null;
+	var note = {id: id, title: "a title", date: new Date()};
+	
+	var db = Korben.db(initFunction, "SomeNotes");
+	var store = db.store("notes");
+
+	// delete takes a single parameter, the key of the item to delete.
+	store.delete(id).fail(function() {
+		start();
+	});
+	
+	// One assertion above (ok)
+	expect(0);
 });

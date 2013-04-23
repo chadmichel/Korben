@@ -270,7 +270,7 @@
 			});		
 			
 			return def; // return promise		
-		}
+		};
 		
 		// Return number of records in a store.
 		this.count = function() {
@@ -293,7 +293,35 @@
 			});
 			
 			return def;
-		}
+		};
+		
+		this.delete = function(key) {
+			
+			var def = $.Deferred();
+			
+			this.execute(function(db) {
+				
+				try {
+									
+					var tx = db.transaction(storeName, "readwrite");
+					var store = tx.objectStore(storeName);		
+					// call IndexedDB method delete method.
+					// it requires only a key parameter	
+					var req = store.delete(key);	
+				
+					req.onsuccess = function(event) {				
+						def.resolve();
+					};
+					req.onerror = function(event) {
+						def.reject(event);
+					};									
+				} catch (err) {
+					def.reject(err);
+				}
+			});
+			
+			return def;
+		};
 		
 	}
 
