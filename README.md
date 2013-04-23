@@ -1,6 +1,7 @@
 Korben
 ======
 [Source Code] (https://github.com/chadmichel/Korben/blob/master/public/javascripts/korben.js)
+[API] (https://github.com/chadmichel/Korben/wiki/API)
  
 Library for simplifying access to IndexedDB.
 
